@@ -26,6 +26,9 @@ while True:
         lastLogEntries = logEntries
 
         log.close()
+
+        time.sleep(.1)
+        
     except FileNotFoundError:
         print("File '%s' not found, trying again in 5 seconds" %logPath)
         time.sleep(5)
