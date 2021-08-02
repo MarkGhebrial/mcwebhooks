@@ -9,15 +9,24 @@ config = json.load(f)
 
 wHook = Webhook(config["webhookURL"])
 
+logPath = config["serverDirectory"] + '/logs/latest.log'
+
 lastLogEntries =[]
 while True:
-    log = open(config["serverDirectory"] + '/logs/latest.log', 'r')
+    try:
+        log = open(logPath, 'r')
 
-    logEntries = []
-    for line in log:
-        logEntries.append(line)
-    
-    if len(logEntries) > len(lastLogEntries):
-        wHook.postMessage(logEntries[len(logEntries) - 1])
+        logEntries = []
+        for line in log:
+            logEntries.append(line)
 
-    lastLogEntries = logEntries
+        if len(logEntries) > len(lastLogEntries):
+            wHook.postMessage(logEntries[len(logEntries) - 1])
+
+        lastLogEntries = logEntries
+
+        log.close()
+    except FileNotFoundError:
+        print("File '%s' not found, trying again in 5 seconds" %logPath)
+        time.sleep(5)
+        
